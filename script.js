@@ -23,6 +23,7 @@ function getMyTemp() {
                 h.innerText = myTemp + "\xB0F"
                 document.querySelector('#localTemp').appendChild(h)
             })
+            
     }
 
   //Logic for error detection if no location can be returned
