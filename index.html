@@ -7,43 +7,73 @@
     <title>Safe Flight</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    
-    
 </head>
+
 <body>
-    
-    <div class="field has-addons">
-        <div class="control">
-          <input class="input" type="text" placeholder="Dates">
+  <div class="columns">
+    <div class="box level is-narrow m-5"  style="width: 200px; height: 200px;background: #0039a6">
+      <nav class="level">
+        <div class="level-item has-text-centered">
+          <div >
+            <p class="title" style="color: white">Local Temp</p>
+            <p class="title" id="localTemp" style="color: white"></p>
+          </div>
         </div>
-        <div class="control">
-          <a class="button is-info">
-            Search
-          </a>
+      </nav>
+    </div>
+    <div class="column">
+      <div class="box is-narrow m-4" style="height: 200px;">
+        <p class="title is-1 has-text-centered has-text-weight-bold" style="color: #0039a6">Safe Flight</p>
+        <p class="title is-4 has-text-centered has-text-weight-bold" style="color: #0039a6">Flying is safe, but the world is dangerous</p>
+      </div>
+    </div>
+  </div>
+  <div class="columns">  
+    <div class="field has-addons column  is-offset-1">
+      <div class="control">
+        <input class="input" type="text" placeholder="Dates">
+      </div>
+      <div class="control">
+        <a class="button is-info">Search</a>
+      </div>
+    </div>
+    <div class="field has-addons column ">
+      <div class="control">
+        <input class="input" type="text" placeholder="Arriving To">
+      </div>
+      <div class="control">
+        <a class="button is-info">Search</a>
+      </div>
+    </div>
+    <div class="field has-addons column ">
+      <div class="control">
+        <input class="input" type="text" placeholder="Departure From">
+      </div>
+      <div class="control">
+        <a class="button is-info">Search</a>
+      </div>
+    </div>
+  </div>  
+  <div class="columns">
+    <div class="column is-one-quarter">
+      <div class="box box m-3" style="height: 550px">
+        <p class="title is-3 has-text-centered has-text-weight-bold" style="color: #0039a6">Flight Info</p>
+        <!-- <p class="title is-4 has-text-centered has-text-weight-bold" style="color: #0039a6">Sub Text</p> -->
+      </div>
+    </div>
+      <div class="column">
+        <div class="box box m-3" style="height: 550px">
+          <p class="title is-3 has-text-centered has-text-weight-bold" style="color: #0039a6">Destination Covid Info</p>
+          <!-- <p class="title is-4 has-text-centered has-text-weight-bold" style="color: #0039a6">Sub Text</p> -->
         </div>
       </div>
-    <div class="field has-addons">
-        <div class="control">
-          <input class="input" type="text" placeholder="Arriving To">
+      <div class="column is-one-quarter">
+        <div class="box m-3" style="height: 550px">
+          <p class="title is-3 has-text-centered has-text-weight-bold" style="color: #0039a6">Destination Weather</p>
+          <!-- <p class="title is-4 has-text-centered has-text-weight-bold" style="color: #0039a6">Sub Text</p> -->
         </div>
-        <div class="control">
-          <a class="button is-info">
-            Search
-          </a>
-        </div>
-      </div>
-    <div class="field has-addons">
-        <div class="control">
-          <input class="input" type="text" placeholder="Departure From">
-        </div>
-        <div class="control">
-          <a class="button is-info">
-            Search
-          </a>
-        </div>
-      </div>
-
-
+  </div>
 <script src="script.js"></script>
 </body>
+
 </html>
