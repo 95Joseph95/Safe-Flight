@@ -1,29 +1,38 @@
 // Variables
 	// Covid api Url
 var covid_api = "https://covid-19-statistics.p.rapidapi.com/reports?";
-	// Current Date for Covid api 
-var date = "2020-04-16";
 	// Country Documentation for Covid Api
 var iso = "USA";
 	// State/Province for Covid Api
 var region_province = "Michigan";
 	// City Documentation for Covid Api
-var city_name = "Luce";
+var city_name = "Luuce";
+var api_key_covid = keys.covid_key
+	//current Date for covid api
+var today =new Date();
+var dd = String(today.getDate()-1).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today.getFullYear();
+
+today = yyyy +"-"+mm+"-"+dd
+console.log(today)
+
+
 
 // Function Calls
 
 fetch_covid_data(covid_api)
-fetch_flight_data()
+
 // Function Definitions
 
 	// Gets Covid Statistics Based on Date and Location
 function fetch_covid_data(url){
 		// Gets Data From Covid api Based on Date, Country, and State
-	fetch(url+ "date="+date+"&iso="+iso +"&region_province="+region_province, {
-	"method": "GET",
-	"headers": {
+	fetch(url+ "date="+today+"&iso="+iso +"&region_province="+region_province, {
+		"method": "GET",
+		"headers": {
 		"x-rapidapi-host": "covid-19-statistics.p.rapidapi.com",
-		"x-rapidapi-key": "2e661642c3mshcd9c007bfe4c8aep1e4335jsnf17ec73a7ae9"
+		"x-rapidapi-key": api_key_covid
 	}
 	})
 	.then(response => {
@@ -58,21 +67,3 @@ function city_sorter(a,b){
 	}
 }
 
-function fetch_flight_data(){
-	fetch("https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsedates/v1.0/US/USD/en-US/SFO-sky/LAX-sky/2021-09-07?inboundpartialdate=2021-09-14", {
-	"method": "GET",
-	"headers": {
-		"x-rapidapi-host": "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-		"x-rapidapi-key": "2e661642c3mshcd9c007bfe4c8aep1e4335jsnf17ec73a7ae9"
-	}
-})
-.then(response => {
-	return response.json()
-})
-.then(response => {
-	console.log(response)
-})
-.catch(err => {
-	console.error(err);
-});
-}
