@@ -1,3 +1,6 @@
+var textarea = document.getElementById('destination');
+var search = document.getElementById('destSearch')
+
 //Get users local temp
 function getMyTemp() {
 
@@ -15,6 +18,7 @@ function getMyTemp() {
             .then(function (response) {
                 return response.json();
             })
+            
             //Return local temp and add it to the DOM
             .then(function (data){
                 myTemp = data.current.temp.toFixed(0)
@@ -23,7 +27,6 @@ function getMyTemp() {
                 h.innerText = myTemp + "\xB0F"
                 document.querySelector('#localTemp').appendChild(h)
             })
-            
     }
 
   //Logic for error detection if no location can be returned
@@ -39,48 +42,64 @@ function getMyTemp() {
     }
 }
 
-getMyTemp()
+//function updateResult(city) {
+function destinationWeather() {
+    var result = textarea.value;
 
-
-var result = ""
-var textarea = document.getElementById('destination');
-var search = document.getElementById('destSearch')
-
-
-function updateResult(city) {
-    result = textarea.value;
-    console.log(result)
-
-    //API url to get local weather
-    let destinationWeather = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&units=imperial' + '&appid=ef63013691934073952193cd8112b3f3'
+    // let destinationWeather = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&units=imperial' + '&appid=ef63013691934073952193cd8112b3f3'
     
-    // 'https://api.openweathermap.org/data/2.5/onecall?lat=' + latitude + '&lon=' + longitude + '&exclude=minutely,hourly,daily,alerts' + '&units=imperial' + '&appid=ef63013691934073952193cd8112b3f3'
-
-    //API call to get local weather
+    //API url to get destination weather
+    let destinationWeather = 'https://api.openweathermap.org/data/2.5/weather?q=' + result + '&units=imperial' + '&appid=ef63013691934073952193cd8112b3f3'
+    
+    //API call to get destination weather
     fetch(destinationWeather) 
         .then(function (response) {
             return response.json();
         })
-        //Return local temp and add it to the DOM
+
+        //Return destination temps and add it to the DOM
         .then(function (data){
-            myDestCondition = data.weather[0].main
-            myDestTemp = data.main.temp
-            myDestLowTemp = data.main.temp_min
-            myDestHighTemp = data.main.temp_max
-            console.log(myDestCondition, myDestTemp, myDestLowTemp, myDestHighTemp)
+            var myDestCondition = data.weather[0].main
+            var myDestTemp = data.main.temp.toFixed(0)
+            var myDestHighTemp = data.main.temp_max.toFixed(0)
+            var myDestLowTemp = data.main.temp_min.toFixed(0)
+            
+            var hText = document.createElement('p')
+            hText.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
+            hText.innerText = 'Current Temp'
+            document.querySelector('#myDestinationsWeather').appendChild(hText)
+                        
             var h = document.createElement('p')
-            h.classList.add('title', 'is-5')
+            h.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
             h.innerText = myDestTemp + "\xB0F"
             document.querySelector('#myDestinationsWeather').appendChild(h)
+
+            var iText = document.createElement('p')
+            iText.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
+            iText.innerText = 'High'
+            document.querySelector('#myDestinationsWeather').appendChild(iText)
+
+            var i = document.createElement('p')
+            i.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
+            i.innerText = myDestHighTemp + "\xB0F"
+            document.querySelector('#myDestinationsWeather').appendChild(i)
+
+            var jText = document.createElement('p')
+            jText.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
+            jText.innerText = 'Low'
+            document.querySelector('#myDestinationsWeather').appendChild(jText)
+
+            var j = document.createElement('p')
+            j.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
+            j.innerText = myDestLowTemp + "\xB0F"
+            document.querySelector('#myDestinationsWeather').appendChild(j)
         })
-        
 }
 
+//Event listener for searching destination
+search.addEventListener('click', destinationWeather);
 
+getMyTemp()
 
-
-
-updateResult('detroit')
-//search.addEventListener('click', updateResult);
-
-
+//Use below to run the updatefunction without having to type a city name every time
+//updateResult('detroit')
