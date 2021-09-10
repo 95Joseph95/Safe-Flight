@@ -64,35 +64,48 @@ function destinationWeather() {
             var myDestHighTemp = data.main.temp_max.toFixed(0)
             var myDestLowTemp = data.main.temp_min.toFixed(0)
             
-            var hText = document.createElement('p')
-            hText.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
-            hText.innerText = 'Current Temp'
-            document.querySelector('#myDestinationsWeather').appendChild(hText)
+            const destArray = [{classes: ["title", "is-4", "has-text-weight-bold", "m-5"], inText: 'Current Temp'}, {inText: myDestTemp + "\xB0F"}, {inText: 'High'}, {inText: myDestHighTemp + "\xB0F"}, {inText: 'Low'}, {inText: myDestLowTemp + "\xB0F"}]
+
+            for (var i = 0; i < destArray.length; i++) {
+                var elem = document.createElement('p')
+                elem.classList.add(...destArray[0].classes)
+                elem.innerText = destArray[i].inText
+                document.querySelector('#myDestinationsWeather').appendChild(elem)
+            }
+            // var hText = document.createElement('p')
+            // hText.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
+            // hText.innerText = 'Current Temp'
+            // document.querySelector('#myDestinationsWeather').appendChild(hText)
+            
+            // var hText = document.createElement('p')
+            // hText.classList.add(...destArray[0].classes)
+            // hText.innerText = destArray[0].inText
+            // document.querySelector('#myDestinationsWeather').appendChild(hText)
                         
-            var h = document.createElement('p')
-            h.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
-            h.innerText = myDestTemp + "\xB0F"
-            document.querySelector('#myDestinationsWeather').appendChild(h)
+            // var h = document.createElement('p')
+            // h.classList.add(...destArray[0].classes)
+            // h.innerText = destArray[1].inText
+            // document.querySelector('#myDestinationsWeather').appendChild(h)
 
-            var iText = document.createElement('p')
-            iText.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
-            iText.innerText = 'High'
-            document.querySelector('#myDestinationsWeather').appendChild(iText)
+            // var iText = document.createElement('p')
+            // iText.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
+            // iText.innerText = 'High'
+            // document.querySelector('#myDestinationsWeather').appendChild(iText)
 
-            var i = document.createElement('p')
-            i.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
-            i.innerText = myDestHighTemp + "\xB0F"
-            document.querySelector('#myDestinationsWeather').appendChild(i)
+            // var i = document.createElement('p')
+            // i.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
+            // i.innerText = myDestHighTemp + "\xB0F"
+            // document.querySelector('#myDestinationsWeather').appendChild(i)
 
-            var jText = document.createElement('p')
-            jText.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
-            jText.innerText = 'Low'
-            document.querySelector('#myDestinationsWeather').appendChild(jText)
+            // var jText = document.createElement('p')
+            // jText.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
+            // jText.innerText = 'Low'
+            // document.querySelector('#myDestinationsWeather').appendChild(jText)
 
-            var j = document.createElement('p')
-            j.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
-            j.innerText = myDestLowTemp + "\xB0F"
-            document.querySelector('#myDestinationsWeather').appendChild(j)
+            // var j = document.createElement('p')
+            // j.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
+            // j.innerText = myDestLowTemp + "\xB0F"
+            // document.querySelector('#myDestinationsWeather').appendChild(j)
         })
 }
 
@@ -122,8 +135,6 @@ var yyyy = today.getFullYear();
  
 today = yyyy +"-"+mm+"-"+dd
 console.log(today)
- 
- 
  
 // Function Calls
  
