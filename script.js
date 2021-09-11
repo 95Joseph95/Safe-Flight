@@ -1,5 +1,7 @@
 var textarea = document.getElementById('destination');
 var search = document.getElementById('destSearch')
+let myCond =''
+let otherCondArray = ["Thunderstorm", "fa-bolt", "Drizzle", "fa-cloud-showers-heavy", "Rain", "fa-cloud-rain", "Snow", "fa-snowflake", "Atmosphere", "fa-exclamation-triangle", "Clouds", "fa-cloud","Clear", "fa-sun"]
 
 //Get users local temp
 function getMyTemp() {
@@ -22,10 +24,15 @@ function getMyTemp() {
             //Return local temp and add it to the DOM
             .then(function (data){
                 myTemp = data.current.temp.toFixed(0)
+                myCond = data.current.weather[0].main
+                console.log(myCond, otherCondArray.indexOf(myCond), typeof myCond)
                 var h = document.createElement('p')
                 h.id = 'tempText'
                 h.innerText = myTemp + "\xB0F"
+                var i = document.createElement('i')
+                i.classList.add("fas", otherCondArray[otherCondArray.indexOf(myCond) + 1])
                 document.querySelector('#localTemp').appendChild(h)
+                document.querySelector('#localTemp').appendChild(i)
             })
     }
 
@@ -46,8 +53,6 @@ function getMyTemp() {
 function destinationWeather() {
     var result = textarea.value;
 
-    // let destinationWeather = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&units=imperial' + '&appid=ef63013691934073952193cd8112b3f3'
-    
     //API url to get destination weather
     let destinationWeather = 'https://api.openweathermap.org/data/2.5/weather?q=' + result + '&units=imperial' + '&appid=ef63013691934073952193cd8112b3f3'
     
@@ -63,7 +68,9 @@ function destinationWeather() {
             var myDestTemp = data.main.temp.toFixed(0)
             var myDestHighTemp = data.main.temp_max.toFixed(0)
             var myDestLowTemp = data.main.temp_min.toFixed(0)        
-            const destArray = [{classes: ["title", "is-4", "has-text-weight-bold", "m-5"], inText: 'Current Temp'}, {inText: myDestTemp + "\xB0F"}, {inText: 'High'}, {inText: myDestHighTemp + "\xB0F"}, {inText: 'Low'}, {inText: myDestLowTemp + "\xB0F"}]
+            const destArray = [{classes: ["title", "is-4", "has-text-weight-bold", "m-5", "destConditions"], inText: 'Current Temp'}, {inText: myDestTemp + "\xB0F"}, {inText: 'High'}, {inText: myDestHighTemp + "\xB0F"}, {inText: 'Low'}, {inText: myDestLowTemp + "\xB0F"}]
+            
+            document.querySelectorAll('.destConditions').forEach(e => e.remove());
 
             for (var i = 0; i < destArray.length; i++) {
                 var elem = document.createElement('p')
@@ -76,9 +83,12 @@ function destinationWeather() {
 
 //Event listener for searching destination
 search.addEventListener('click', destinationWeather);
-
-//Use below to run the updatefunction without having to type a city name every time
-//updateResult('detroit')
+textarea.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      search.click();
+    }
+  });
 
 getMyTemp()
 
@@ -118,11 +128,11 @@ function fetch_covid_data(url){
     }
     })
     .then(response => {
-        // Acces JSON type data
+        // Access JSON type data
     return response.json()
     })
     .then(response=>{
-            // Acces Data Based on The City
+            // Access Data Based on The City
         console.log(response.data)
         city_sorter(response.data[0].region.cities, response.data[0])
     })
