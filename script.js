@@ -25,7 +25,6 @@ function getMyTemp() {
             .then(function (data){
                 myTemp = data.current.temp.toFixed(0)
                 myCond = data.current.weather[0].main
-                console.log(myCond, otherCondArray.indexOf(myCond), typeof myCond)
                 var h = document.createElement('p')
                 h.id = 'tempText'
                 h.innerText = myTemp + "\xB0F"
@@ -81,8 +80,25 @@ function destinationWeather() {
         })
 }
 
+//Stored recent destination searches to local storage
+function recentDestinations() {
+    var result = textarea.value
+    localStorage.setItem('thirdDest', localStorage.getItem('secondDest'))
+    localStorage.setItem('secondDest',localStorage.getItem('firstDest'))
+    localStorage.setItem('firstDest', result)
+    document.getElementById('firstDest').innerText = localStorage.getItem('firstDest')
+    document.getElementById('secondDest').innerText = localStorage.getItem('secondDest')
+    document.getElementById('thirdDest').innerText = localStorage.getItem('thirdDest')
+
+}
+
+
+
+
+
 //Event listener for searching destination
-search.addEventListener('click', destinationWeather);
+search.addEventListener('click', destinationWeather)
+search.addEventListener('click', recentDestinations);
 textarea.addEventListener("keyup", function(event) {
     if (event.keyCode === 13) {
       event.preventDefault();
@@ -158,3 +174,4 @@ function city_sorter(a,b){
         }
     }
 }
+
