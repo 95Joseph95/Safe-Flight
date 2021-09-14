@@ -100,6 +100,12 @@ function recentDestinations() {
 
 //Display the most recent destination searches
 function showRecentDestination() {
+    if (localStorage.getItem('firstDest') == null) {
+        localStorage.setItem('thirdDest', "")
+    localStorage.setItem('secondDest', "")
+    localStorage.setItem('firstDest', "")
+    showRecentDestination()
+    } else 
     document.getElementById('firstDest').innerText = localStorage.getItem('firstDest')
     document.getElementById('secondDest').innerText = localStorage.getItem('secondDest')
     document.getElementById('thirdDest').innerText = localStorage.getItem('thirdDest')
