@@ -25,7 +25,6 @@ function getMyTemp() {
             .then(function (data){
                 myTemp = data.current.temp.toFixed(0)
                 myCond = data.current.weather[0].main
-                console.log(myCond, otherCondArray.indexOf(myCond), typeof myCond)
                 var h = document.createElement('p')
                 h.id = 'tempText'
                 h.innerText = myTemp + "\xB0F"
@@ -40,7 +39,6 @@ function getMyTemp() {
     function error() {
         textContent = 'Unable to retrieve your location';
     }
-  
     if(!navigator.geolocation) {
         textContent = 'Geolocation is not supported by your browser';
     } else {
@@ -49,7 +47,7 @@ function getMyTemp() {
     }
 }
 
-//function updateResult(city) {
+//Get destination weather and displays it
 function destinationWeather() {
     var result = textarea.value;
 
@@ -64,14 +62,13 @@ function destinationWeather() {
 
         //Return destination temps and add it to the DOM
         .then(function (data){
-            //var myDestCondition = data.weather[0].main
             var myDestTemp = data.main.temp.toFixed(0)
             var myDestHighTemp = data.main.temp_max.toFixed(0)
             var myDestLowTemp = data.main.temp_min.toFixed(0)        
-            const destArray = [{classes: ["title", "is-4", "has-text-weight-bold", "m-5", "destConditions"], inText: 'Current Temp'}, {inText: myDestTemp + "\xB0F"}, {inText: 'High'}, {inText: myDestHighTemp + "\xB0F"}, {inText: 'Low'}, {inText: myDestLowTemp + "\xB0F"}]
-            
-            document.querySelectorAll('.destConditions').forEach(e => e.remove());
+            const destArray = [{classes: ["title", "is-4", "has-text-weight-bold", "m-5", "destConditions"], inText: 'Current Temp'}, {inText: myDestTemp + "\xB0F"}, {inText: 'High'}, {inText: myDestHighTemp + "\xB0F"}, {inText: 'Low'}, {inText: myDestLowTemp + "\xB0F"}]  
 
+            //Resets this part of the DOM
+            document.querySelectorAll('.destConditions').forEach(e => e.remove());
             for (var i = 0; i < destArray.length; i++) {
                 var elem = document.createElement('p')
                 elem.classList.add(...destArray[0].classes)
@@ -81,8 +78,25 @@ function destinationWeather() {
         })
 }
 
+//Store recent destination searches to local storage
+function recentDestinations() {
+    var result = textarea.value
+    localStorage.setItem('thirdDest', localStorage.getItem('secondDest'))
+    localStorage.setItem('secondDest',localStorage.getItem('firstDest'))
+    localStorage.setItem('firstDest', result)
+    showRecentDestination()
+}
+
+//Display the most recent destination searches
+function showRecentDestination() {
+    document.getElementById('firstDest').innerText = localStorage.getItem('firstDest')
+    document.getElementById('secondDest').innerText = localStorage.getItem('secondDest')
+    document.getElementById('thirdDest').innerText = localStorage.getItem('thirdDest')
+}
+
 //Event listener for searching destination
-search.addEventListener('click', destinationWeather);
+search.addEventListener('click', destinationWeather)
+search.addEventListener('click', recentDestinations);
 textarea.addEventListener("keyup", function(event) {
     if (event.keyCode === 13) {
       event.preventDefault();
@@ -91,6 +105,7 @@ textarea.addEventListener("keyup", function(event) {
   });
 
 getMyTemp()
+showRecentDestination()
 
 // Variables
     // Covid api Url
@@ -158,3 +173,4 @@ function city_sorter(a,b){
         }
     }
 }
+

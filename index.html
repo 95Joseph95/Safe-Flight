@@ -15,10 +15,7 @@
 </head>
 
 <body>
-
-
   <div class="columns">
-
     <div class="box level is-narrow m-5"  style="width: 200px; height: 200px;background: #0039a6">
       <nav class="level">
         <div class="level-item has-text-centered">
@@ -37,9 +34,7 @@
     </div>
   </div>
 
-
   <div class="columns">  
-
     <div class="field has-addons column  is-offset-1">
       <div class="control">
         <input class="input" type="text" placeholder="Dates">
@@ -48,40 +43,32 @@
         <a class="button is-info">Search</a>
       </div>
     </div>
-
     <div class="field has-addons column ">
       <div class="control" >
         <input class="input" type="text" id="destination" placeholder="Arriving To">
       </div>
-
       <div class="control">
         <a class="button is-info" id="destSearch">Search</a>
       </div>
     </div>
-    
     <div class="field has-addons column ">
       <div class="control">
         <input class="input" type="text" placeholder="Departure From">
       </div>
-      
       <div class="control">
         <a class="button is-info" >Search</a>
       </div>
     </div>
   </div>  
-  
-
   <div class="columns">
     <div class="column is-one-quarter">
       <div class="box box m-3" style="height: 550px">
         <p class="title is-3 has-text-centered has-text-weight-bold" style="color: #0039a6">Flight Info</p>
-        <!-- <p class="title is-4 has-text-centered has-text-weight-bold" style="color: #0039a6">Sub Text</p> -->
       </div>
     </div>
       <div class="column">
         <div class="box box m-3" style="height: 550px">
           <p class="title is-3 has-text-centered has-text-weight-bold" style="color: #0039a6">Destination Covid Info</p>
-          <!-- <p class="title is-4 has-text-centered has-text-weight-bold" style="color: #0039a6">Sub Text</p> -->
         </div>
       </div>
       <div class="column is-one-quarter">
@@ -94,11 +81,27 @@
             </span>
           </a> -->
         </div>
-
+    </div>
+  </div>
+  <div class="columns">
+    <div class="column is-half is-offset-one-quarter">
+      <div class="box is-narrow m-4" >
+        <p class="title is-3 has-text-centered has-text-weight-bold" style="color: #0039a6">Recent Destinations</p>
+        <div class="content">
+          <ol class="title is-4 has-text-weight-bold" style="color: #0039a6"type="1">
+            <li id="firstDest"></li>
+            <li id="secondDest"></li>
+            <li id="thirdDest"></li>
+          </ol>
+          <!-- <div class="field is-grouped">
+            <button class="button is-outlined is-info is-large is-fullwidth" id="firstDest">Recent</button>
+            <button class="button is-outlined  is-info is-large is-fullwidth" id="secondDest">Recent</button>
+            <button class="button is-outlined  is-info is-large is-fullwidth" id="thirdDest">Recent</button>
+          </div> -->
+      </div>
+    </div>
   </div>
 <script src="config.js"></script>
 <script src="script.js"></script>
-
 </body>
-
 </html>
