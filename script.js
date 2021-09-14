@@ -3,8 +3,6 @@ var search = document.getElementById('destSearch')
 let myCond =''
 let otherCondArray = ["Thunderstorm", "fa-bolt", "Drizzle", "fa-cloud-showers-heavy", "Rain", "fa-cloud-rain", "Snow", "fa-snowflake", "Atmosphere", "fa-exclamation-triangle", "Clouds", "fa-cloud","Clear", "fa-sun"]
 
-showRecentDestination()
-
 //Get users local temp
 function getMyTemp() {
 
@@ -41,7 +39,6 @@ function getMyTemp() {
     function error() {
         textContent = 'Unable to retrieve your location';
     }
-  
     if(!navigator.geolocation) {
         textContent = 'Geolocation is not supported by your browser';
     } else {
@@ -50,7 +47,7 @@ function getMyTemp() {
     }
 }
 
-//function updateResult(city) {
+//Get destination weather and displays it
 function destinationWeather() {
     var result = textarea.value;
 
@@ -65,14 +62,13 @@ function destinationWeather() {
 
         //Return destination temps and add it to the DOM
         .then(function (data){
-            //var myDestCondition = data.weather[0].main
             var myDestTemp = data.main.temp.toFixed(0)
             var myDestHighTemp = data.main.temp_max.toFixed(0)
             var myDestLowTemp = data.main.temp_min.toFixed(0)        
-            const destArray = [{classes: ["title", "is-4", "has-text-weight-bold", "m-5", "destConditions"], inText: 'Current Temp'}, {inText: myDestTemp + "\xB0F"}, {inText: 'High'}, {inText: myDestHighTemp + "\xB0F"}, {inText: 'Low'}, {inText: myDestLowTemp + "\xB0F"}]
-            
-            document.querySelectorAll('.destConditions').forEach(e => e.remove());
+            const destArray = [{classes: ["title", "is-4", "has-text-weight-bold", "m-5", "destConditions"], inText: 'Current Temp'}, {inText: myDestTemp + "\xB0F"}, {inText: 'High'}, {inText: myDestHighTemp + "\xB0F"}, {inText: 'Low'}, {inText: myDestLowTemp + "\xB0F"}]  
 
+            //Resets this part of the DOM
+            document.querySelectorAll('.destConditions').forEach(e => e.remove());
             for (var i = 0; i < destArray.length; i++) {
                 var elem = document.createElement('p')
                 elem.classList.add(...destArray[0].classes)
@@ -82,7 +78,7 @@ function destinationWeather() {
         })
 }
 
-//Stored recent destination searches to local storage
+//Store recent destination searches to local storage
 function recentDestinations() {
     var result = textarea.value
     localStorage.setItem('thirdDest', localStorage.getItem('secondDest'))
@@ -109,6 +105,7 @@ textarea.addEventListener("keyup", function(event) {
   });
 
 getMyTemp()
+showRecentDestination()
 
 // Variables
     // Covid api Url
