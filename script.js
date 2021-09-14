@@ -63,7 +63,7 @@ function destinationWeather() {
             var myDestTemp = data.main.temp.toFixed(0)
             var myDestHighTemp = data.main.temp_max.toFixed(0)
             var myDestLowTemp = data.main.temp_min.toFixed(0)
-            
+
             var hText = document.createElement('p')
             hText.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
             hText.innerText = 'Current Temp'
@@ -104,71 +104,279 @@ search.addEventListener('click', destinationWeather);
 
 getMyTemp()
 
-// Variables
-    // Covid api Url
-	var covid_api = "https://covid-19-statistics.p.rapidapi.com/reports?";
-    // Country Documentation for Covid Api
+//#region variables
+var covid_api = "https://covid-19-statistics.p.rapidapi.com/reports?";
+    // List of States and abbreviations
+var states = [
+    ['Arizona', 'AZ'],
+    ['Alabama', 'AL'],
+    ['Alaska', 'AK'],
+    ['Arkansas', 'AR'],
+    ['California', 'CA'],
+    ['Colorado', 'CO'],
+    ['Connecticut', 'CT'],
+    ['Delaware', 'DE'],
+    ['Florida', 'FL'],
+    ['Georgia', 'GA'],
+    ['Hawaii', 'HI'],
+    ['Idaho', 'ID'],
+    ['Illinois', 'IL'],
+    ['Indiana', 'IN'],
+    ['Iowa', 'IA'],
+    ['Kansas', 'KS'],
+    ['Kentucky', 'KY'],
+    ['Louisiana', 'LA'],
+    ['Maine', 'ME'],
+    ['Maryland', 'MD'],
+    ['Massachusetts', 'MA'],
+    ['Michigan', 'MI'],
+    ['Minnesota', 'MN'],
+    ['Mississippi', 'MS'],
+    ['Missouri', 'MO'],
+    ['Montana', 'MT'],
+    ['Nebraska', 'NE'],
+    ['Nevada', 'NV'],
+    ['New Hampshire', 'NH'],
+    ['New Jersey', 'NJ'],
+    ['New Mexico', 'NM'],
+    ['New York', 'NY'],
+    ['North Carolina', 'NC'],
+    ['North Dakota', 'ND'],
+    ['Ohio', 'OH'],
+    ['Oklahoma', 'OK'],
+    ['Oregon', 'OR'],
+    ['Pennsylvania', 'PA'],
+    ['Rhode Island', 'RI'],
+    ['South Carolina', 'SC'],
+    ['South Dakota', 'SD'],
+    ['Tennessee', 'TN'],
+    ['Texas', 'TX'],
+    ['Utah', 'UT'],
+    ['Vermont', 'VT'],
+    ['Virginia', 'VA'],
+    ['Washington', 'WA'],
+    ['West Virginia', 'WV'],
+    ['Wisconsin', 'WI'],
+    ['Wyoming', 'WY'],
+];
+    // Country For Covid API Documentation
 var iso = "USA";
-    // State/Province for Covid Api
-var region_province = "Michigan";
-    // City Documentation for Covid Api
-var city_name = "Luce";
-var api_key_covid = keys.covid_key
-    //current Date for covid api
-var today =new Date();
-var dd = String(today.getDate()-1).padStart(2, '0');
-var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-var yyyy = today.getFullYear();
+    // Lenguage For SkyScanner API Documentation
+var locale = "en-US";
+    // Currency For SkyScanner API Documentation
+var currency ="USD"
+    // Country For SkyScanner API Documentaion
+var country = "US"
+    // Origin ID For SkyScanner API Documentaion
+var origin = ""
+    // Destination ID for SkyScanner API Documentation
+var destination =""
+    // Flight Date For SkyScanner Documentation 
+flight_date =""
+    // Flight Return Date For SkyScanner Documentation
+flight_return_date="anytime"
+    // Api Key For Fetch
+var api_key = "2e661642c3mshcd9c007bfe4c8aep1e4335jsnf17ec73a7ae9"
+//#endregion
  
-today = yyyy +"-"+mm+"-"+dd
-console.log(today)
+//#region Function Calls
+document.getElementById("destSearch").addEventListener("click", function(){
+    id_identifier(document.getElementById("destination").value, "arriving_dpdn")
+    fetch_covid_data(covid_api, iso, state_abb(document.getElementById("destination").value, 0, 0))
+})
+document.getElementById("originSearch").addEventListener("click", function(){
+    id_identifier(document.getElementById("depart_input").value, "depart_dpdn")
+})
  
+document.getElementById("depart_dpdn").addEventListener("change", function(){
+    origin= this.value
+})
+document.getElementById("arriving_dpdn").addEventListener("change", function(){
+    destination= this.value
+    fetch_flight_data(country, currency, locale, destination, origin ,flight_date,flight_return_date);
+})
+document.getElementById("dateSearch").addEventListener("click", function(){
+    flight_date = document.getElementById("date_input").value
+    console.log(flight_date)
+    
+})
+//#endregion
  
- 
-// Function Calls
- 
-fetch_covid_data(covid_api)
- 
-// Function Definitions
- 
-    // Gets Covid Statistics Based on Date and Location
-function fetch_covid_data(url){
-        // Gets Data From Covid api Based on Date, Country, and State
-    fetch(url+ "date="+today+"&iso="+iso +"&region_province="+region_province, {
+//#region Function Definitions 
+function fetch_covid_data(url, iso, province){
+    fetch(url+ "date="+current_date()+"&iso="+iso +"&region_province="+province, {
         "method": "GET",
         "headers": {
         "x-rapidapi-host": "covid-19-statistics.p.rapidapi.com",
-        "x-rapidapi-key": api_key_covid
+        "x-rapidapi-key": api_key
     }
     })
     .then(response => {
-        // Acces JSON type data
     return response.json()
     })
     .then(response=>{
-            // Acces Data Based on The City
-        console.log(response.data)
-        city_sorter(response.data[0].region.cities, response.data[0])
+        var new_li_array = [state = "State: "+response.data[0].region.province, confirmed = "Confiremed Casses: "+response.data[0].confirmed, deaths ="Deaths: "+response.data[0].deaths, last_upd = "Last Updated On: "+response.data[0].last_update]
+        new_li(new_li_array);
     })
     .catch(err => {
     console.error(err);
 });
 }
-    // Cycles trough The Cities Array in The Covid api to find The info In The City Selected
-function city_sorter(a,b){
-    var found = false;
+ 
+function id_identifier(input, id){
+    fetch("https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/autosuggest/v1.0/US/USD/en-US/?query=" + input, {
+    "method": "GET",
+    "headers": {
+        "x-rapidapi-host": "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
+        "x-rapidapi-key": "2e661642c3mshcd9c007bfe4c8aep1e4335jsnf17ec73a7ae9"
+    }
+    })
+    .then(response => {
+        return response.json()
+    })
+    .then(response =>{
+        
+        places_sorter(response.Places, state_abb(input, 0, 1), id)
+        
+    })
+    .catch(err => {
+        console.error(err);
+    });
+}
+ 
+function places_sorter(a, b, c){
+    var select = document.getElementById(c);
+    
+    if(select.children.length > 0){
+       while(select.firstChild){
+           select.removeChild(select.firstChild)
+       } 
+    }
     for (var i = 0; i < a.length; i++) {
-        if(city_name==a[i].name){
-            found=true
-            console.log("Here is The Data on: " +a[i].name+".");
-            console.log("Confirmed Casses: "+a[i].confirmed);
-            console.log("Deaths: "+a[i].deaths);
-            console.log("Last Updated on: "+a[i].last_update);
-        }else if(a.length-1 == i & found == false){
-            console.log("we Couldn`t find any data on: " +city_name+", but here is data on the state of: " + b.region.province)
-            console.log("Confirmed Casses: "+b.confirmed)
-            console.log("Active Casses: "+b.active);
-            console.log("Deaths: "+b.deaths);
+        if(a[i].RegionId == b){
+            var place = a[i].PlaceName
+            var option = document.createElement("option");
+            option.text=place;
+            option.value=a[i].PlaceId
+            select.appendChild(option);
+        }
+        
+    }
+}
+ 
+function new_li(a){
+    var ul = document.getElementById("covid_cnt");
+    
+    if(ul.children.length > 0){
+        while(ul.firstChild){
+            ul.removeChild(ul.firstChild)
+        }
+    }
+    for (var i = 0; i < a.length; i++) {
+        var li = document.createElement("li")
+        if(i==0){
+            li.appendChild(document.createTextNode(a[0]))
+            ul.appendChild(li);
+        }
+        else if(i == 1){
+            li.appendChild(document.createTextNode(a[1]))
+            ul.appendChild(li);
+        }
+        else if(i == 2){
+            li.appendChild(document.createTextNode(a[2]))
+            ul.appendChild(li);
+        }
+        else if(i == 3){
+            li.appendChild(document.createTextNode(a[3]))
+            ul.appendChild(li);
+        }
+   }
+}
+ 
+function current_date(){
+    var today =new Date();
+    var dd = String(today.getDate()-1).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    today = yyyy +"-"+mm+"-"+dd
+    return today
+}
+ 
+function fetch_flight_data(a, b, c, d, e, f, g){
+    
+    fetch("https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/"+a+"/"+b+"/"+c+"/"+d+"/"+e+"/"+f+"?inboundpartialdate="+g, {
+    "method": "GET",
+    "headers": {
+        "x-rapidapi-host": "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
+        "x-rapidapi-key": api_key
+    }
+    })
+    .then(response => {
+        return response.json();
+    })
+    .then(response=>{
+        var found = true
+        if(response.Quotes.length!=0){
+            for (var i = 0; i < response.Quotes.length; i++) {
+                found=true
+                if(response.Quotes[i].Direct==true){
+                    var direct_flight=[carrier_name = Carrier_ids(response, i)+" Flight Info: ", direct_confirmation="Flight is direct: "+response.Quotes[i].Direct, flight_price="Price: $"+response.Quotes[i].MinPrice]
+                    
+                }else if(response.Quotes[i].Direct==false){
+                    var not_direct_flight =[carrier_name = Carrier_ids(response, i)+" Flight Info: ", direct_confirmation="Flight is direct: "+response.Quotes[i].Direct, flight_price="Price: $"+response.Quotes[i].MinPrice]
+                }
+            }
+            append_flight_data(direct_flight,not_direct_flight, found)
+        }else{
+            found = false
+            append_flight_data(direct_flight,not_direct_flight, found)
+        }
+    })
+    .catch(err => {
+        console.error(err);
+    });
+}
+ 
+function state_abb(a, b, c){
+    for (let i = 0; i < states.length; i++) {
+        if(states[i][b] ==a){
+            return states[i][c]
         }
     }
 }
+ 
+function Carrier_ids(a, b){
+    for (var i = 0; i < a.Carriers.length; i++) {
+        if(a.Quotes[b].OutboundLeg.CarrierIds[0] == a.Carriers[i].CarrierId){
+            return a.Carriers[i].Name;
+        } 
+    }
+}
+ 
+function append_flight_data(a, b, c){
+    var ul= document.getElementById("flight_info_cnt");
+    if(ul.hasChildNodes){
+        while(ul.firstChild){
+            ul.removeChild(ul.firstChild);
+        }
+    }
+    if(c == true){
+        
+        for (var i = 0; i < a.length; i++) {
+            var li= document.createElement("li");
+            li.appendChild(document.createTextNode(a[i]));
+            ul.appendChild(li);
+        }
+        for (var e = 0; e < b.length; e++) {
+            var li= document.createElement("li");
+            li.appendChild(document.createTextNode(b[e]));
+            ul.appendChild(li);
+        }
+    }else if(c == false){
+        var li= document.createElement("li");
+        li.appendChild(document.createTextNode("No Flights Were Found"));
+        ul.appendChild(li);
+    }
+}
+//#endregion
+
