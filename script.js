@@ -50,41 +50,52 @@ function getMyTemp() {
 //Get destination weather and displays it
 function destinationWeather() {
     var result = textarea.value;
-
+    if (result == '') {
+        return
+    } else {
     //API url to get destination weather
-    let destinationWeather = 'https://api.openweathermap.org/data/2.5/weather?q=' + result + '&units=imperial' + '&appid=ef63013691934073952193cd8112b3f3'
-    
-    //API call to get destination weather
-    fetch(destinationWeather) 
-        .then(function (response) {
-            return response.json();
-        })
+        let destinationWeather = 'https://api.openweathermap.org/data/2.5/weather?q=' + result + '&units=imperial' + '&appid=ef63013691934073952193cd8112b3f3'
+        
+        //API call to get destination weather
+        fetch(destinationWeather) 
+            .then(function (response) {
+                return response.json();
+            })
 
-        //Return destination temps and add it to the DOM
-        .then(function (data){
-            var myDestTemp = data.main.temp.toFixed(0)
-            var myDestHighTemp = data.main.temp_max.toFixed(0)
-            var myDestLowTemp = data.main.temp_min.toFixed(0)        
-            const destArray = [{classes: ["title", "is-4", "has-text-weight-bold", "m-5", "destConditions"], inText: 'Current Temp'}, {inText: myDestTemp + "\xB0F"}, {inText: 'High'}, {inText: myDestHighTemp + "\xB0F"}, {inText: 'Low'}, {inText: myDestLowTemp + "\xB0F"}]  
-
-            //Resets this part of the DOM
-            document.querySelectorAll('.destConditions').forEach(e => e.remove());
-            for (var i = 0; i < destArray.length; i++) {
-                var elem = document.createElement('p')
-                elem.classList.add(...destArray[0].classes)
-                elem.innerText = destArray[i].inText
-                document.querySelector('#myDestinationsWeather').appendChild(elem)
-            }
-        })
+            //Return destination temps and add it to the DOM
+            .then(function (data){
+                var myDestTemp = data.main.temp.toFixed(0)
+                var myDestHighTemp = data.main.temp_max.toFixed(0)
+                var myDestLowTemp = data.main.temp_min.toFixed(0) 
+                var myDestCond = data.weather[0].main       
+                const destArray = [{classes: ["title", "is-4", "has-text-weight-bold", "m-5", "destConditions"], inText: 'Current Temp'}, {inText: myDestTemp + "\xB0F"}, {inText: 'High'}, {inText: myDestHighTemp + "\xB0F"}, {inText: 'Low'}, {inText: myDestLowTemp + "\xB0F"}]  
+                document.querySelectorAll('.destConditions').forEach(e => e.remove());
+                for (var i = 0; i < destArray.length; i++) {
+                    var elem = document.createElement('p')
+                    elem.classList.add(...destArray[0].classes)
+                    elem.innerText = destArray[i].inText
+                    document.querySelector('#myDestinationsWeather').appendChild(elem)
+                }
+                var i = document.createElement('i')
+                //i.id = "condImg"
+                i.style.fontSize = "80px"
+                i.classList.add("destConditions","fas", otherCondArray[otherCondArray.indexOf(myDestCond) + 1])
+                document.querySelector('#myDestinationsWeather').appendChild(i)
+            })
+    }            
 }
 
 //Store recent destination searches to local storage
 function recentDestinations() {
     var result = textarea.value
+    if (result == '') {
+        return
+    } else {
     localStorage.setItem('thirdDest', localStorage.getItem('secondDest'))
     localStorage.setItem('secondDest',localStorage.getItem('firstDest'))
     localStorage.setItem('firstDest', result)
     showRecentDestination()
+    }
 }
 
 //Display the most recent destination searches
@@ -103,6 +114,9 @@ textarea.addEventListener("keyup", function(event) {
       search.click();
     }
   });
+textarea.addEventListener("click", function() {
+    document.getElementById("destination").value = ""
+})
 
 getMyTemp()
 showRecentDestination()
