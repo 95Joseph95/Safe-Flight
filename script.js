@@ -100,9 +100,19 @@ function recentDestinations() {
 
 //Display the most recent destination searches
 function showRecentDestination() {
-    document.getElementById('firstDest').innerText = localStorage.getItem('firstDest')
-    document.getElementById('secondDest').innerText = localStorage.getItem('secondDest')
-    document.getElementById('thirdDest').innerText = localStorage.getItem('thirdDest')
+    if (localStorage.getItem('firstDest') == null) {
+        localStorage.setItem('firstDest', " ")
+        if (localStorage.getItem('secondDest') == null) {
+            localStorage.setItem('secondDest', " ")
+            if (localStorage.getItem('thirdDest') == null) {
+                localStorage.setItem('thirdDest', " ")
+            }
+        }
+        showRecentDestination()
+    } else 
+        document.getElementById('firstDest').innerText = localStorage.getItem('firstDest')
+        document.getElementById('secondDest').innerText = localStorage.getItem('secondDest')
+        document.getElementById('thirdDest').innerText = localStorage.getItem('thirdDest')
 }
 
 //Event listener for searching destination
