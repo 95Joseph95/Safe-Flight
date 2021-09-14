@@ -3,6 +3,8 @@ var search = document.getElementById('destSearch')
 let myCond =''
 let otherCondArray = ["Thunderstorm", "fa-bolt", "Drizzle", "fa-cloud-showers-heavy", "Rain", "fa-cloud-rain", "Snow", "fa-snowflake", "Atmosphere", "fa-exclamation-triangle", "Clouds", "fa-cloud","Clear", "fa-sun"]
 
+showRecentDestination()
+
 //Get users local temp
 function getMyTemp() {
 
@@ -86,15 +88,15 @@ function recentDestinations() {
     localStorage.setItem('thirdDest', localStorage.getItem('secondDest'))
     localStorage.setItem('secondDest',localStorage.getItem('firstDest'))
     localStorage.setItem('firstDest', result)
+    showRecentDestination()
+}
+
+//Display the most recent destination searches
+function showRecentDestination() {
     document.getElementById('firstDest').innerText = localStorage.getItem('firstDest')
     document.getElementById('secondDest').innerText = localStorage.getItem('secondDest')
     document.getElementById('thirdDest').innerText = localStorage.getItem('thirdDest')
-
 }
-
-
-
-
 
 //Event listener for searching destination
 search.addEventListener('click', destinationWeather)
