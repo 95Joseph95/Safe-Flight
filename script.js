@@ -1,5 +1,7 @@
 var textarea = document.getElementById('destination');
 var search = document.getElementById('destSearch')
+let myCond =''
+let otherCondArray = ["Thunderstorm", "fa-bolt", "Drizzle", "fa-cloud-showers-heavy", "Rain", "fa-cloud-rain", "Snow", "fa-snowflake", "Atmosphere", "fa-exclamation-triangle", "Clouds", "fa-cloud","Clear", "fa-sun"]
 
 //Get users local temp
 function getMyTemp() {
@@ -22,10 +24,14 @@ function getMyTemp() {
             //Return local temp and add it to the DOM
             .then(function (data){
                 myTemp = data.current.temp.toFixed(0)
+                myCond = data.current.weather[0].main
                 var h = document.createElement('p')
                 h.id = 'tempText'
                 h.innerText = myTemp + "\xB0F"
+                var i = document.createElement('i')
+                i.classList.add("fas", otherCondArray[otherCondArray.indexOf(myCond) + 1])
                 document.querySelector('#localTemp').appendChild(h)
+                document.querySelector('#localTemp').appendChild(i)
             })
     }
 
@@ -33,7 +39,6 @@ function getMyTemp() {
     function error() {
         textContent = 'Unable to retrieve your location';
     }
-  
     if(!navigator.geolocation) {
         textContent = 'Geolocation is not supported by your browser';
     } else {
@@ -42,67 +47,90 @@ function getMyTemp() {
     }
 }
 
-//function updateResult(city) {
+//Get destination weather and displays it
 function destinationWeather() {
     var result = textarea.value;
-
-    // let destinationWeather = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&units=imperial' + '&appid=ef63013691934073952193cd8112b3f3'
-    
+    if (result == '') {
+        return
+    } else {
     //API url to get destination weather
-    let destinationWeather = 'https://api.openweathermap.org/data/2.5/weather?q=' + result + '&units=imperial' + '&appid=ef63013691934073952193cd8112b3f3'
-    
-    //API call to get destination weather
-    fetch(destinationWeather) 
-        .then(function (response) {
-            return response.json();
-        })
 
-        //Return destination temps and add it to the DOM
-        .then(function (data){
-            var myDestCondition = data.weather[0].main
-            var myDestTemp = data.main.temp.toFixed(0)
-            var myDestHighTemp = data.main.temp_max.toFixed(0)
-            var myDestLowTemp = data.main.temp_min.toFixed(0)
+        let destinationWeather = 'https://api.openweathermap.org/data/2.5/weather?q=' + result + '&units=imperial' + '&appid=ef63013691934073952193cd8112b3f3'
+        
+        //API call to get destination weather
+        fetch(destinationWeather) 
+            .then(function (response) {
+                return response.json();
+            })
 
-            var hText = document.createElement('p')
-            hText.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
-            hText.innerText = 'Current Temp'
-            document.querySelector('#myDestinationsWeather').appendChild(hText)
-                        
-            var h = document.createElement('p')
-            h.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
-            h.innerText = myDestTemp + "\xB0F"
-            document.querySelector('#myDestinationsWeather').appendChild(h)
+            //Return destination temps and add it to the DOM
+            .then(function (data){
+                var myDestTemp = data.main.temp.toFixed(0)
+                var myDestHighTemp = data.main.temp_max.toFixed(0)
+                var myDestLowTemp = data.main.temp_min.toFixed(0) 
+                var myDestCond = data.weather[0].main       
+                const destArray = [{classes: ["title", "is-4", "has-text-weight-bold", "m-5", "destConditions"], inText: 'Current Temp'}, {inText: myDestTemp + "\xB0F"}, {inText: 'High'}, {inText: myDestHighTemp + "\xB0F"}, {inText: 'Low'}, {inText: myDestLowTemp + "\xB0F"}]  
+                document.querySelectorAll('.destConditions').forEach(e => e.remove());
+                for (var i = 0; i < destArray.length; i++) {
+                    var elem = document.createElement('p')
+                    elem.classList.add(...destArray[0].classes)
+                    elem.innerText = destArray[i].inText
+                    document.querySelector('#myDestinationsWeather').appendChild(elem)
+                }
+                var i = document.createElement('i')
+                //i.id = "condImg"
+                i.style.fontSize = "80px"
+                i.classList.add("destConditions","fas", otherCondArray[otherCondArray.indexOf(myDestCond) + 1])
+                document.querySelector('#myDestinationsWeather').appendChild(i)
+            })
+    }            
+}
 
-            var iText = document.createElement('p')
-            iText.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
-            iText.innerText = 'High'
-            document.querySelector('#myDestinationsWeather').appendChild(iText)
+//Store recent destination searches to local storage
+function recentDestinations() {
+    var result = textarea.value
+    if (result == '') {
+        return
+    } else {
+    localStorage.setItem('thirdDest', localStorage.getItem('secondDest'))
+    localStorage.setItem('secondDest',localStorage.getItem('firstDest'))
+    localStorage.setItem('firstDest', result)
+    showRecentDestination()
+    }
+}
 
-            var i = document.createElement('p')
-            i.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
-            i.innerText = myDestHighTemp + "\xB0F"
-            document.querySelector('#myDestinationsWeather').appendChild(i)
-
-            var jText = document.createElement('p')
-            jText.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
-            jText.innerText = 'Low'
-            document.querySelector('#myDestinationsWeather').appendChild(jText)
-
-            var j = document.createElement('p')
-            j.classList.add('title', 'is-4', 'has-text-weight-bold', 'm-5')
-            j.innerText = myDestLowTemp + "\xB0F"
-            document.querySelector('#myDestinationsWeather').appendChild(j)
-        })
+//Display the most recent destination searches
+function showRecentDestination() {
+    if (localStorage.getItem('firstDest') == null) {
+        localStorage.setItem('firstDest', " ")
+        if (localStorage.getItem('secondDest') == null) {
+            localStorage.setItem('secondDest', " ")
+            if (localStorage.getItem('thirdDest') == null) {
+                localStorage.setItem('thirdDest', " ")
+            }
+        }
+        showRecentDestination()
+    } else 
+        document.getElementById('firstDest').innerText = localStorage.getItem('firstDest')
+        document.getElementById('secondDest').innerText = localStorage.getItem('secondDest')
+        document.getElementById('thirdDest').innerText = localStorage.getItem('thirdDest')
 }
 
 //Event listener for searching destination
-search.addEventListener('click', destinationWeather);
-
-//Use below to run the updatefunction without having to type a city name every time
-//updateResult('detroit')
+search.addEventListener('click', destinationWeather)
+search.addEventListener('click', recentDestinations);
+textarea.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      search.click();
+    }
+  });
+textarea.addEventListener("click", function() {
+    document.getElementById("destination").value = ""
+})
 
 getMyTemp()
+showRecentDestination()
 
 //#region variables
 var covid_api = "https://covid-19-statistics.p.rapidapi.com/reports?";
@@ -161,6 +189,7 @@ var states = [
 ];
     // Country For Covid API Documentation
 var iso = "USA";
+
     // Lenguage For SkyScanner API Documentation
 var locale = "en-US";
     // Currency For SkyScanner API Documentation
@@ -201,6 +230,7 @@ document.getElementById("dateSearch").addEventListener("click", function(){
     
 })
 //#endregion
+
  
 //#region Function Definitions 
 function fetch_covid_data(url, iso, province){
@@ -379,6 +409,5 @@ function append_flight_data(a, b, c){
     }
 }
 //#endregion
-
 
 
