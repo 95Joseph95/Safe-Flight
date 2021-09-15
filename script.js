@@ -186,7 +186,13 @@ var states = [
     ['West Virginia', 'WV'],
     ['Wisconsin', 'WI'],
     ['Wyoming', 'WY'],
+    ['WA', 'WA'],
+    ['MI', 'MI'],
+    ['AK', 'Alaska']
 ];
+var statesShortToLong = [
+    ['WA', 'Washington']
+]
     // Country For Covid API Documentation
 var iso = "USA";
 
@@ -211,7 +217,7 @@ var api_key = "2e661642c3mshcd9c007bfe4c8aep1e4335jsnf17ec73a7ae9"
 //#region Function Calls
 document.getElementById("destSearch").addEventListener("click", function(){
     id_identifier(document.getElementById("destination").value, "arriving_dpdn")
-    fetch_covid_data(covid_api, iso, state_abb(document.getElementById("destination").value, 0, 0))
+    fetch_covid_data(covid_api, iso, stateAbbShortToLong(document.getElementById("destination").value, 0, 0))
 })
 document.getElementById("originSearch").addEventListener("click", function(){
     id_identifier(document.getElementById("depart_input").value, "depart_dpdn")
@@ -219,9 +225,11 @@ document.getElementById("originSearch").addEventListener("click", function(){
  
 document.getElementById("depart_dpdn").addEventListener("change", function(){
     origin= this.value
+    console.log(origin)
 })
 document.getElementById("arriving_dpdn").addEventListener("change", function(){
     destination= this.value
+    console.log(country, currency, locale, destination, origin ,flight_date,flight_return_date)
     fetch_flight_data(country, currency, locale, destination, origin ,flight_date,flight_return_date);
 })
 document.getElementById("dateSearch").addEventListener("click", function(){
@@ -229,11 +237,35 @@ document.getElementById("dateSearch").addEventListener("click", function(){
     console.log(flight_date)
     
 })
+
+document.getElementById("destSearch").addEventListener("click", function() {
+    var departDropdown = document.getElementById("depart_dpdn")
+    var destDropDown = document.getElementById("arriving_dpdn")
+    departDropdown.style.display = "block"
+    destDropDown.style.display = "block"
+})
+
+textarea.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      document.getElementById("originSearch").click();
+    }
+  });
+
+  textarea.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      document.getElementById("dateSearch").click();
+    }
+  });
+  
+
 //#endregion
 
  
 //#region Function Definitions 
 function fetch_covid_data(url, iso, province){
+    console.log("iso: " + iso + " Prov: " + province)
     fetch(url+ "date="+current_date()+"&iso="+iso +"&region_province="+province, {
         "method": "GET",
         "headers": {
@@ -254,6 +286,7 @@ function fetch_covid_data(url, iso, province){
 }
  
 function id_identifier(input, id){
+    console.log("id_identifier City: " + input + " id: " + id)
     fetch("https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/autosuggest/v1.0/US/USD/en-US/?query=" + input, {
     "method": "GET",
     "headers": {
@@ -265,8 +298,12 @@ function id_identifier(input, id){
         return response.json()
     })
     .then(response =>{
-        
-        places_sorter(response.Places, state_abb(input, 0, 1), id)
+        console.log(response)
+        let regionID = response.Places[0].RegionId
+        // let regionID = "Washington"
+        console.log(regionID)
+        places_sorter(response.Places, state_abb(regionID, 0, 1), id)
+        //places_sorter(response.Places, state_abb(input, 0, 1), id)
         
     })
     .catch(err => {
@@ -274,7 +311,34 @@ function id_identifier(input, id){
     });
 }
  
+function id_identifier_COVID(input, id){
+    console.log("id_identifier City: " + input + " id: " + id)
+    fetch("https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/autosuggest/v1.0/US/USD/en-US/?query=" + input, {
+    "method": "GET",
+    "headers": {
+        "x-rapidapi-host": "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
+        "x-rapidapi-key": "2e661642c3mshcd9c007bfe4c8aep1e4335jsnf17ec73a7ae9"
+    }
+    })
+    .then(response => {
+        return response.json()
+    })
+    .then(response =>{
+        console.log(response)
+        let regionID = response.Places[0].RegionId
+        // let regionID = "Washington"
+        console.log(regionID)
+        places_sorter(response.Places, stateAbbShortToLong(regionID, 0, 1), id)
+        //places_sorter(response.Places, state_abb(input, 0, 1), id)
+        
+    })
+    .catch(err => {
+        console.error(err);
+    });
+}
+
 function places_sorter(a, b, c){
+    console.log("places_sorter: " + a,b,c)
     var select = document.getElementById(c);
     
     if(select.children.length > 0){
@@ -283,8 +347,10 @@ function places_sorter(a, b, c){
        } 
     }
     for (var i = 0; i < a.length; i++) {
+        console.log("places_sorter: " + a[i].RegionId, b)
         if(a[i].RegionId == b){
             var place = a[i].PlaceName
+            console.log(place, a[i].PlaceName)
             var option = document.createElement("option");
             option.text=place;
             option.value=a[i].PlaceId
@@ -345,6 +411,7 @@ function fetch_flight_data(a, b, c, d, e, f, g){
         return response.json();
     })
     .then(response=>{
+        console.log(response)
         var found = true
         if(response.Quotes.length!=0){
             for (var i = 0; i < response.Quotes.length; i++) {
@@ -368,10 +435,28 @@ function fetch_flight_data(a, b, c, d, e, f, g){
 }
  
 function state_abb(a, b, c){
+    console.log("state_abb City: " + a,b,c)
     for (let i = 0; i < states.length; i++) {
-        if(states[i][b] ==a){
+        //console.log(states[i][b])
+        if(states[i][b] == a){
+            console.log(states[i][c])
             return states[i][c]
-        }
+        } //else {
+            //console.log("no state found" + a,b,c)
+        //}
+    }
+}
+
+function stateAbbShortToLong(a, b, c){
+    console.log("state_abb City: " + a,b,c)
+    for (let i = 0; i < statesShortToLong.length; i++) {
+        //console.log(states[i][b])
+        if(statesShortToLong[i][b] == a){
+            console.log(statesShortToLong[i][c])
+            return statesShortToLong[i][c]
+        } //else {
+            //console.log("no state found" + a,b,c)
+        //}
     }
 }
  
@@ -395,16 +480,19 @@ function append_flight_data(a, b, c){
         for (var i = 0; i < a.length; i++) {
             var li= document.createElement("li");
             li.appendChild(document.createTextNode(a[i]));
+            li.classList.add("title", "is-4", "has-text-weight-bold", "m-5")
             ul.appendChild(li);
         }
         for (var e = 0; e < b.length; e++) {
             var li= document.createElement("li");
             li.appendChild(document.createTextNode(b[e]));
+            li.classList.add("title", "is-4", "has-text-weight-bold", "m-5")
             ul.appendChild(li);
         }
     }else if(c == false){
         var li= document.createElement("li");
         li.appendChild(document.createTextNode("No Flights Were Found"));
+        li.classList.add("title", "is-4", "has-text-weight-bold", "m-5")
         ul.appendChild(li);
     }
 }
