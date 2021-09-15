@@ -7,7 +7,7 @@
     <title>Safe Flight</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    <link rel="stylesheet" href="/assets/css/all.css">
+    <link rel="stylesheet" href="assets/css/all.css">
     <script
       src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"
       data-auto-a11y="true"
@@ -37,7 +37,7 @@
   <div class="columns">  
     <div class="field has-addons column  is-offset-1">
       <div class="control">
-        <input id="date_input"class="input" type="text" placeholder="Date: YYYY/MM/DD">
+        <input id="date_input"class="input" type="text" placeholder="Date: YYYY-MM-DD">
       </div>
       <div class="control">
         <a id="dateSearch"class="button is-info">Search</a>
@@ -45,26 +45,27 @@
     </div>
     <div class="field has-addons column ">
       <div class="control" >
-        <input id="depart_input" class="input" type="text"  placeholder="Depart From">
+        <input id="depart_input" class="input" type="text"  placeholder="Departing State">
       </div>
-
+      <div class="control" >
       <select name="" id="depart_dpdn">
 
       </select>
-
+      </div>
       <div class="control">
         <a class="button is-info" id="originSearch">Search</a>
       </div>
     </div>
     <div class="field has-addons column ">
       <div class="control">
-        <input class="input" id="destination" type="text" placeholder="Arriving To">
+        <input class="input" id="destination" type="text" placeholder="Destination State">
       </div>
+      <div class="control" >
 
       <select name="" id="arriving_dpdn">
         
       </select>
-
+      </div>
       <div class="control">
         <a id="destSearch"class="button is-info" >Search</a>
       </div>
