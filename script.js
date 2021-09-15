@@ -189,7 +189,6 @@ var states = [
 ];
     // Country For Covid API Documentation
 var iso = "USA";
-
     // Lenguage For SkyScanner API Documentation
 var locale = "en-US";
     // Currency For SkyScanner API Documentation
@@ -230,7 +229,6 @@ document.getElementById("dateSearch").addEventListener("click", function(){
     
 })
 //#endregion
-
  
 //#region Function Definitions 
 function fetch_covid_data(url, iso, province){
@@ -409,5 +407,6 @@ function append_flight_data(a, b, c){
     }
 }
 //#endregion
+
 
 
