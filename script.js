@@ -344,7 +344,7 @@ function fetch_flight_data(a, b, c, d, e, f, g){
     })
     .then(response=>{
         var found = true
-        if(response.Quotes.length!=0){
+        if(response.Quotes.length!=0&&response.Quotes){
             for (var i = 0; i < response.Quotes.length; i++) {
                 found=true
                 if(response.Quotes[i].Direct==true){
@@ -357,6 +357,7 @@ function fetch_flight_data(a, b, c, d, e, f, g){
             append_flight_data(direct_flight,not_direct_flight, found)
         }else{
             found = false
+
             append_flight_data(direct_flight,not_direct_flight, found)
         }
     })
